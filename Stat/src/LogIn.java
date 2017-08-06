@@ -138,9 +138,9 @@ public class LogIn extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(0, 0, 204));
         jLabel6.setText("Mohsin Younas");
 
-        jLabel7.setIcon(new javax.swing.ImageIcon("C:\\wamp\\www\\Java_GUI_Swing\\Stat\\Images\\easy stats.PNG")); // NOI18N
+        jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/easy stats.PNG"))); // NOI18N
 
-        jLabel5.setIcon(new javax.swing.ImageIcon("C:\\wamp\\www\\Java_GUI_Swing\\Stat\\Images\\pie-chart.png")); // NOI18N
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/pie-chart.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

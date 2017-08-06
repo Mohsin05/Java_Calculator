@@ -185,14 +185,14 @@
     <Component class="javax.swing.JLabel" name="jLabel7">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\wamp\www\Java_GUI_Swing\Stat\Images\easy stats.PNG"/>
+          <Image iconType="3" name="/Images/easy stats.PNG"/>
         </Property>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="2" name="C:\wamp\www\Java_GUI_Swing\Stat\Images\pie-chart.png"/>
+          <Image iconType="3" name="/Images/pie-chart.png"/>
         </Property>
       </Properties>
     </Component>
