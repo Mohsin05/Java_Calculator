@@ -1251,7 +1251,7 @@ public class EasyStatMain extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try {
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"help.pdf");
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"Help.pdf");
             
 
         } catch (Exception e) {
