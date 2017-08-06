@@ -37,6 +37,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -54,7 +55,7 @@ public class EasyStatMain extends javax.swing.JFrame {
     private Connection connection = null;
     private PreparedStatement pst = null;
     private ResultSet resultset = null;
-    private byte[] personImg=null;
+    private byte[] personImg = null;
     private String filePath = null;
 
     public EasyStatMain() {
@@ -64,6 +65,7 @@ public class EasyStatMain extends javax.swing.JFrame {
         upDateStudentInfo();
         updateStudentShortInfo();
         currentDate();
+        updateStudentDoc();
     }
 
     private void currentDate() {
@@ -111,6 +113,19 @@ public class EasyStatMain extends javax.swing.JFrame {
 
     }
 
+    private void updateStudentDoc() {
+
+        try {
+            String sql = "select * from Doc_table";
+            pst = connection.prepareStatement(sql);
+            resultset = pst.executeQuery();
+            tblDoc.setModel(DbUtils.resultSetToTableModel(resultset));
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex);
+        }
+
+    }
+
     public void init() {
 
         setLocationRelativeTo(null);
@@ -137,36 +152,40 @@ public class EasyStatMain extends javax.swing.JFrame {
             txtStdentWeight.setText(resultset.getString("Weight"));
             txtStdentBlood.setText(resultset.getString("Blood"));
             comboStudentId.setSelectedItem(resultset.getString("Gender"));
-            byte[] imageData = resultset.getBytes("Photo");        
-            ImageIcon format = new ImageIcon(scaledImage(imageData,labelImage.getWidth(),labelImage.getHeight()));
-            labelImage.setIcon(format);        
+            byte[] imageData = resultset.getBytes("Photo");
+            ImageIcon format = new ImageIcon(scaledImage(imageData, labelImage.getWidth(), labelImage.getHeight()));
+            labelImage.setIcon(format);
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(rootPane, ex);
         }
 
-    };
+    }
+
+    ;
     
-    private Image scaledImage(byte[]img,int w, int h){
-    
-    BufferedImage resizedImage = new BufferedImage(w,h,BufferedImage.TYPE_INT_RGB);
-    
-    try{
-    
-        Graphics2D g2 = resizedImage.createGraphics();
-        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        
-        //convert byte array back to buffered image
-        
-        ByteArrayInputStream in = new ByteArrayInputStream(img);
-        BufferedImage bImageFromConvert = ImageIO.read(in);
-        g2.drawImage(bImageFromConvert,0,0,w,h,null);
-        g2.dispose();
-        
-    
-    }catch(Exception e){ JOptionPane.showMessageDialog(rootPane,e);}
-         
-   return resizedImage;
-    };
+    private Image scaledImage(byte[] img, int w, int h) {
+
+        BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+
+        try {
+
+            Graphics2D g2 = resizedImage.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+            //convert byte array back to buffered image
+            ByteArrayInputStream in = new ByteArrayInputStream(img);
+            BufferedImage bImageFromConvert = ImageIO.read(in);
+            g2.drawImage(bImageFromConvert, 0, 0, w, h, null);
+            g2.dispose();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        }
+
+        return resizedImage;
+    }
+
+    ;
      
     public void close() {
 
@@ -197,9 +216,21 @@ public class EasyStatMain extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbStudentInfo = new javax.swing.JTable();
-        jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
+        jPanel16 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tblDoc = new javax.swing.JTable();
+        txtDocAtch = new javax.swing.JTextField();
+        btnDocAttch = new javax.swing.JButton();
+        txtDocId = new javax.swing.JTextField();
+        txtDocNme = new javax.swing.JTextField();
+        txtDocSid = new javax.swing.JTextField();
+        btnDocAdd = new javax.swing.JButton();
+        btnDocDel = new javax.swing.JButton();
+        btnDocClear = new javax.swing.JButton();
+        jLabel16 = new javax.swing.JLabel();
+        jLabel17 = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
         jPanel13 = new javax.swing.JPanel();
         jPanel15 = new javax.swing.JPanel();
         jLabel12 = new javax.swing.JLabel();
@@ -347,41 +378,102 @@ public class EasyStatMain extends javax.swing.JFrame {
 
         jTabbedPane1.addTab(" Data table ", jPanel2);
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1163, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
-        );
+        jPanel16.setBackground(new java.awt.Color(204, 204, 255));
+        jPanel16.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTabbedPane1.addTab(" Chart ", jPanel3);
+        tblDoc.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblDoc.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblDocMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(tblDoc);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1163, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
-        );
+        jPanel16.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 20, 610, 158));
 
-        jTabbedPane1.addTab(" Statistics ", jPanel4);
+        txtDocAtch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDocAtchActionPerformed(evt);
+            }
+        });
+        jPanel16.add(txtDocAtch, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 31, 185, -1));
+
+        btnDocAttch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/attach.png"))); // NOI18N
+        btnDocAttch.setText("Attach");
+        btnDocAttch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocAttchActionPerformed(evt);
+            }
+        });
+        jPanel16.add(btnDocAttch, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 29, 91, -1));
+        jPanel16.add(txtDocId, new org.netbeans.lib.awtextra.AbsoluteConstraints(88, 67, 107, -1));
+        jPanel16.add(txtDocNme, new org.netbeans.lib.awtextra.AbsoluteConstraints(88, 153, 107, -1));
+        jPanel16.add(txtDocSid, new org.netbeans.lib.awtextra.AbsoluteConstraints(88, 110, 107, -1));
+
+        btnDocAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/add.png"))); // NOI18N
+        btnDocAdd.setText("Add");
+        btnDocAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocAddActionPerformed(evt);
+            }
+        });
+        jPanel16.add(btnDocAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 65, 91, -1));
+
+        btnDocDel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/delete.png"))); // NOI18N
+        btnDocDel.setText("Delete");
+        btnDocDel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocDelActionPerformed(evt);
+            }
+        });
+        jPanel16.add(btnDocDel, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 108, 91, -1));
+
+        btnDocClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/clear.png"))); // NOI18N
+        btnDocClear.setText("Clear");
+        btnDocClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDocClearActionPerformed(evt);
+            }
+        });
+        jPanel16.add(btnDocClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 151, 91, -1));
+
+        jLabel16.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel16.setText("Doc Id");
+        jPanel16.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(38, 69, -1, -1));
+
+        jLabel17.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel17.setText("Student Id");
+        jPanel16.add(jLabel17, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 112, -1, -1));
+
+        jLabel18.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+        jLabel18.setText("Doc Name ");
+        jPanel16.add(jLabel18, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 155, -1, -1));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1163, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(74, 74, 74)
+                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(99, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addComponent(jPanel16, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(60, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(" Documents ", jPanel5);
@@ -497,10 +589,9 @@ public class EasyStatMain extends javax.swing.JFrame {
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addGap(0, 11, Short.MAX_VALUE))
         );
 
         jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -1155,35 +1246,13 @@ public class EasyStatMain extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jPanel8KeyReleased
 
-    private void tbStudentInfoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbStudentInfoMousePressed
-        // TODO add your handling code here:
-
-        try {
-            // TODO add your handling code here:
-
-            int row = tbStudentInfo.getSelectedRow();
-            String tableClick = (tbStudentInfo.getModel().getValueAt(row, 0).toString());
-            String sql = "select * from Student_info where Student_id ='" + tableClick + "'";
-            pst = connection.prepareStatement(sql);
-            resultset = pst.executeQuery();
-            if (resultset.next()) {
-                setValues();
-
-            }
-        } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(rootPane, ex);
-        }
-
-
-    }//GEN-LAST:event_tbStudentInfoMousePressed
-
 
     private void mItOffHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItOffHelpActionPerformed
         // TODO add your handling code here:
 
         try {
-
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler" + "help.pdf");
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"help.pdf");
+            
 
         } catch (Exception e) {
 
@@ -1203,9 +1272,8 @@ public class EasyStatMain extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try {
-
-            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler" + "help.pdf");
-
+            Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+"Help.pdf");
+          
         } catch (Exception e) {
 
             JOptionPane.showMessageDialog(rootPane, "Error Opening File!");
@@ -1262,121 +1330,110 @@ public class EasyStatMain extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
-     
-            // TODO add your handling code here:
-            
-            txtStudentId.setText(null);
-            txtStdentFname.setText(null);
-            txtStdentLname.setText(null);
-            txtStdentSeries.setText(null);
-            txtStdentWeight.setText(null);
-            txtStdentAge.setText(null);
-            txtStdentBlood.setText(null);
-            txtStdentDept.setText(null);
-            txtStdentHeight.setText(null);
-            comboStudentId.setSelectedItem(null);
-            
+
+        // TODO add your handling code here:
+        txtStudentId.setText(null);
+        txtStdentFname.setText(null);
+        txtStdentLname.setText(null);
+        txtStdentSeries.setText(null);
+        txtStdentWeight.setText(null);
+        txtStdentAge.setText(null);
+        txtStdentBlood.setText(null);
+        txtStdentDept.setText(null);
+        txtStdentHeight.setText(null);
+        comboStudentId.setSelectedItem(null);
+
     }//GEN-LAST:event_btnClearActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         // TODO add your handling code here:
-        
-        
-        String sql= "insert into Student_info(Student_id,First_name,Last_name,Department,"
+
+        String sql = "insert into Student_info(Student_id,First_name,Last_name,Department,"
                 + "Series,Age,Height,Weight,Gender,Blood) values(?,?,?,?,?,?,?,?,?,?)";
-      try{
-          pst = connection.prepareStatement(sql);
-          pst.setString(1,txtStudentId.getText());
-          pst.setString(2,txtStdentFname.getText());
-          pst.setString(3,txtStdentLname.getText());
-          pst.setString(4,txtStdentDept.getText());
-          pst.setString(5,txtStdentSeries.getText());
-          pst.setString(6,txtStdentAge.getText());    
-          pst.setString(7,txtStdentBlood.getText());
-          pst.setString(8,txtStdentHeight.getText());
-          pst.setString(9,(String)comboStudentId.getSelectedItem());
-          pst.setString(10,txtStdentWeight.getText());
+        try {
+            pst = connection.prepareStatement(sql);
+            pst.setString(1, txtStudentId.getText());
+            pst.setString(2, txtStdentFname.getText());
+            pst.setString(3, txtStdentLname.getText());
+            pst.setString(4, txtStdentDept.getText());
+            pst.setString(5, txtStdentSeries.getText());
+            pst.setString(6, txtStdentAge.getText());
+            pst.setString(7, txtStdentBlood.getText());
+            pst.setString(8, txtStdentHeight.getText());
+            pst.setString(9, (String) comboStudentId.getSelectedItem());
+            pst.setString(10, txtStdentWeight.getText());
 
-          pst.execute();
-          JOptionPane.showMessageDialog(rootPane, "Saved");
-      
-      }catch(Exception e){
-                JOptionPane.showMessageDialog(rootPane, e);
+            pst.execute();
+            JOptionPane.showMessageDialog(rootPane, "Saved");
 
-          
-          
-      }
-        
-        
-        
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+
+        }
+
         updateStudentShortInfo();
         upDateStudentInfo();
-        
-        
+
+
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
-        
-        
-        
-         
-        String sql= "update Student_info set First_name=?,Last_name=?,Department=?,"
-                + "Series=?, Age=?,Height=?,Weight=?,Gender=?,Blood=? where Student_id=?";
-      try{
-          pst = connection.prepareStatement(sql);
-          
-          pst.setString(1,txtStdentFname.getText());
-          pst.setString(2,txtStdentLname.getText());
-          pst.setString(3,txtStdentDept.getText());
-          pst.setString(4,txtStdentSeries.getText());
-          pst.setString(5,txtStdentAge.getText());    
-          pst.setString(6,txtStdentBlood.getText());
-          pst.setString(7,txtStdentHeight.getText());
-          pst.setString(8,(String)comboStudentId.getSelectedItem());
-          pst.setString(9,txtStdentWeight.getText());
-          pst.setString(10, txtStudentId.getText());
 
-          pst.execute();
-          JOptionPane.showMessageDialog(rootPane, "Updated");
-      
-      }catch(Exception e){
-                JOptionPane.showMessageDialog(rootPane, e);
- 
-      }
-      
+        String sql = "update Student_info set First_name=?,Last_name=?,Department=?,"
+                + "Series=?, Age=?,Height=?,Weight=?,Gender=?,Blood=? where Student_id=?";
+        try {
+            pst = connection.prepareStatement(sql);
+
+            pst.setString(1, txtStdentFname.getText());
+            pst.setString(2, txtStdentLname.getText());
+            pst.setString(3, txtStdentDept.getText());
+            pst.setString(4, txtStdentSeries.getText());
+            pst.setString(5, txtStdentAge.getText());
+            pst.setString(6, txtStdentBlood.getText());
+            pst.setString(7, txtStdentHeight.getText());
+            pst.setString(8, (String) comboStudentId.getSelectedItem());
+            pst.setString(9, txtStdentWeight.getText());
+            pst.setString(10, txtStudentId.getText());
+
+            pst.execute();
+            JOptionPane.showMessageDialog(rootPane, "Updated");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+
+        }
+
         updateStudentShortInfo();
         upDateStudentInfo();
-        
+
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         // TODO add your handling code here:
-        
-        
-        
-       int p=JOptionPane.showConfirmDialog(rootPane,"Do you really want to Delete?","Delete",JOptionPane.YES_NO_OPTION);
-       
-       if(p==0){
-       
-           String sql="delete from Student_info where Student_id=?";
-           
-           try{
-           
-           pst=connection.prepareStatement(sql);
-           pst.setString(1,txtStudentId.getText());
-           pst.execute();
-           JOptionPane.showMessageDialog(rootPane, "Deleted!");
-           }
-           catch(SQLException e){
-           
-           JOptionPane.showMessageDialog(rootPane, e);}
-           
-       }
-        
+
+        int p = JOptionPane.showConfirmDialog(rootPane, "Do you really want to Delete?", "Delete", JOptionPane.YES_NO_OPTION);
+
+        if (p == 0) {
+
+            String sql = "delete from Student_info where Student_id=?";
+
+            try {
+
+                pst = connection.prepareStatement(sql);
+                pst.setString(1, txtStudentId.getText());
+                pst.execute();
+                JOptionPane.showMessageDialog(rootPane, "Deleted!");
+            } catch (SQLException e) {
+
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+
+        }
+
         updateStudentShortInfo();
         upDateStudentInfo();
-        
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void txtImageUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtImageUploadActionPerformed
@@ -1385,144 +1442,270 @@ public class EasyStatMain extends javax.swing.JFrame {
 
     private void btnImageUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageUploadActionPerformed
         // TODO add your handling code here:
-        
+
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(null);
         File f = chooser.getSelectedFile();
-         String fileName=f.getAbsolutePath();
-         txtImageUpload.setText(fileName);
-        
-         try{
-         
-         FileInputStream fIS = new FileInputStream(f);
-         ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
-         byte[] buf = new byte[1024];
-         for(int readNum;(readNum=fIS.read(buf))!=-1;){
-         
-             bAOS.write(buf,0,readNum);
-         };
-         personImg = bAOS.toByteArray();
-         
-         }catch(Exception e){
-         JOptionPane.showMessageDialog(rootPane, e);
-         }                 
+        String fileName = f.getAbsolutePath();
+        txtImageUpload.setText(fileName);
+
+        try {
+
+            FileInputStream fIS = new FileInputStream(f);
+            ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
+            byte[] buf = new byte[1024];
+            for (int readNum; (readNum = fIS.read(buf)) != -1;) {
+
+                bAOS.write(buf, 0, readNum);
+            };
+            personImg = bAOS.toByteArray();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        }
     }//GEN-LAST:event_btnImageUploadActionPerformed
 
     private void btnImageSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImageSaveActionPerformed
         // TODO add your handling code here:
-        
+
         String sql = "update Student_info set Photo=? where Student_id=?";
-        
-        try{
-        pst = connection.prepareStatement(sql);
-        pst.setBytes(1,personImg);
-        pst.setString(2,txtStudentId.getText());
-        pst.execute();
-        JOptionPane.showMessageDialog(rootPane, "Image Saved");
-        
-        }catch(Exception e ){
-        JOptionPane.showMessageDialog(rootPane, e);
-        } 
+
+        try {
+            pst = connection.prepareStatement(sql);
+            pst.setBytes(1, personImg);
+            pst.setString(2, txtStudentId.getText());
+            pst.execute();
+            JOptionPane.showMessageDialog(rootPane, "Image Saved");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        }
     }//GEN-LAST:event_btnImageSaveActionPerformed
-
-    private void txtToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtToActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtToActionPerformed
-
-    private void txtSubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSubActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSubActionPerformed
-
-    private void btnsndMailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsndMailActionPerformed
-        // TODO add your handling code here:
-        
-        final String From = txtFrom.getText();
-        final String password = txtPassword.getText();
-        
-        String To = txtTo.getText();
-        String Subject = txtSub.getText();
-        String txtMessage = tAMsgBody.getText();
-        
-      Properties pros = new Properties();
-      pros.put("mail.smtp.host","smtp.gmail.com");
-      pros.put("mail.smtp.socketFactory.port","465"); //ssl protocol port no is 465
-      pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-      pros.put("mail.smtp.auth","true");
-      pros.put("mail.smtp.port","465");
-         
-      Session session = Session.getDefaultInstance(pros,new javax.mail.Authenticator() {
-          @Override
-          protected PasswordAuthentication getPasswordAuthentication(){
-             
-          return new PasswordAuthentication(From,password);
-          }
-       });
-      
-      try{
-      
-      //message header
-      Message message= new MimeMessage(session);
-      message.setFrom(new InternetAddress(From));
-      message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(To));
-      message.setSubject(Subject);
-     
-      //code for set the text message
-      
-      MimeBodyPart messageBodyPart = new MimeBodyPart();
-      messageBodyPart.setText(txtMessage);
-      Multipart multiPart = new MimeMultipart();
-      multiPart.addBodyPart(messageBodyPart);
-      
-      
-      //code for attach file
-      
-      messageBodyPart = new MimeBodyPart();
-      DataSource source = new FileDataSource(filePath);
-      messageBodyPart.setDataHandler(new DataHandler(source));
-      messageBodyPart.setFileName(txtAttachName.getText());
-      multiPart.addBodyPart(messageBodyPart);
-      
-      message.setContent(multiPart);
-      Transport.send(message);
-      JOptionPane.showMessageDialog(rootPane,"Message sent");
-      
-      }catch(MessagingException e){
-          JOptionPane.showMessageDialog(rootPane,e);}
-      
-      
-        
-    }//GEN-LAST:event_btnsndMailActionPerformed
-
-    private void txtAttachFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAttachFileActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAttachFileActionPerformed
-
-    private void txtAttachNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAttachNameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAttachNameActionPerformed
 
     private void txtPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtPasswordActionPerformed
 
+    private void btnsndMailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsndMailActionPerformed
+        // TODO add your handling code here:
+
+        final String From = txtFrom.getText();
+        final String password = txtPassword.getText();
+
+        String To = txtTo.getText();
+        String Subject = txtSub.getText();
+        String txtMessage = tAMsgBody.getText();
+
+        Properties pros = new Properties();
+        pros.put("mail.smtp.host", "smtp.gmail.com");
+        pros.put("mail.smtp.socketFactory.port", "465"); //ssl protocol port no is 465
+        pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        pros.put("mail.smtp.auth", "true");
+        pros.put("mail.smtp.port", "465");
+
+        Session session = Session.getDefaultInstance(pros, new javax.mail.Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+
+                return new PasswordAuthentication(From, password);
+            }
+        });
+
+        try {
+
+            //message header
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(From));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(To));
+            message.setSubject(Subject);
+
+            //code for set the text message
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setText(txtMessage);
+            Multipart multiPart = new MimeMultipart();
+            multiPart.addBodyPart(messageBodyPart);
+
+            //code for attach file
+            messageBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(filePath);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(txtAttachName.getText());
+            multiPart.addBodyPart(messageBodyPart);
+
+            message.setContent(multiPart);
+            Transport.send(message);
+            JOptionPane.showMessageDialog(rootPane, "Message sent");
+
+        } catch (MessagingException e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+        }
+    }//GEN-LAST:event_btnsndMailActionPerformed
+
+    private void txtAttachNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAttachNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAttachNameActionPerformed
+
     private void btnAttachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAttachActionPerformed
         // TODO add your handling code here:
-        
-        
+
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(rootPane);
-        
-        File f=chooser.getSelectedFile();
+
+        File f = chooser.getSelectedFile();
         filePath = f.getAbsolutePath();
         txtAttachFile.setText(filePath);
         txtAttachName.setText(filePath);
-        
-        
-        
-        
-        
-        
     }//GEN-LAST:event_btnAttachActionPerformed
+
+    private void txtAttachFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAttachFileActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtAttachFileActionPerformed
+
+    private void txtSubActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSubActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSubActionPerformed
+
+    private void txtToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtToActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtToActionPerformed
+
+    private void btnDocAttchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocAttchActionPerformed
+        // TODO add your handling code here:
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.showOpenDialog(rootPane);
+
+        File f = chooser.getSelectedFile();
+        String fileDocPath = f.getAbsolutePath();
+        txtDocAtch.setText(fileDocPath);
+    }//GEN-LAST:event_btnDocAttchActionPerformed
+
+    private void txtDocAtchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDocAtchActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDocAtchActionPerformed
+
+    private void tbStudentInfoMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbStudentInfoMousePressed
+        // TODO add your handling code here:
+
+        try {
+            // TODO add your handling code here:
+
+            int row = tbStudentInfo.getSelectedRow();
+            String tableClick = (tbStudentInfo.getModel().getValueAt(row, 0).toString());
+            String sql = "select * from Student_info where Student_id ='" + tableClick + "'";
+            pst = connection.prepareStatement(sql);
+            resultset = pst.executeQuery();
+            if (resultset.next()) {
+                setValues();
+
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex);
+        }
+    }//GEN-LAST:event_tbStudentInfoMousePressed
+
+    private void tblDocMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblDocMouseClicked
+        // TODO add your handling code here:
+
+        try {
+            // TODO add your handling code here:
+
+            int row = tblDoc.getSelectedRow();
+            String tableClick = (tblDoc.getModel().getValueAt(row, 0).toString());
+            String sql = "select * from Doc_table where Doc_id ='" + tableClick + "'";
+            pst = connection.prepareStatement(sql);
+            resultset = pst.executeQuery();
+            if (resultset.next()) {
+                txtDocId.setText(resultset.getString("Doc_id"));
+                txtDocSid.setText(resultset.getString("Student_id"));
+                txtDocNme.setText(resultset.getString("Doc_name"));
+                txtDocAtch.setText(resultset.getString("Path"));
+                
+                
+
+            }
+            
+            
+            
+            
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex);
+        }
+        try{
+             int row = tblDoc.getSelectedRow();
+            String tableClick = (tblDoc.getModel().getValueAt(row, 3).toString());
+        Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler "+tableClick);
+        
+        }catch(Exception e){JOptionPane.showMessageDialog(rootPane, e);}
+
+
+    }//GEN-LAST:event_tblDocMouseClicked
+
+    private void btnDocAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocAddActionPerformed
+        // TODO add your handling code here:
+
+        String sql = "insert into Doc_table(Doc_id,Student_id,Doc_name,Path) values(?,?,?,?)";
+        try {
+            pst = connection.prepareStatement(sql);
+            pst.setString(1, txtDocId.getText());
+            pst.setString(2, txtDocSid.getText());
+            pst.setString(3, txtDocNme.getText());
+            pst.setString(4, txtDocAtch.getText());
+
+            pst.execute();
+            JOptionPane.showMessageDialog(rootPane, "Saved");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+
+        }
+
+        updateStudentShortInfo();
+        upDateStudentInfo();
+        updateStudentDoc();
+
+
+    }//GEN-LAST:event_btnDocAddActionPerformed
+
+    private void btnDocClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocClearActionPerformed
+        // TODO add your handling code here:
+
+        txtDocId.setText(null);
+        txtDocSid.setText(null);
+        txtDocNme.setText(null);
+        txtDocAtch.setText(null);
+
+
+    }//GEN-LAST:event_btnDocClearActionPerformed
+
+    private void btnDocDelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocDelActionPerformed
+        // TODO add your handling code here:
+        int p = JOptionPane.showConfirmDialog(rootPane, "Do you really want to Delete?", "Delete", JOptionPane.YES_NO_OPTION);
+
+        if (p == 0) {
+
+            String sql = "delete from Doc_table where Doc_id=?";
+
+            try {
+
+                pst = connection.prepareStatement(sql);
+                pst.setString(1, txtDocId.getText());
+                pst.execute();
+                JOptionPane.showMessageDialog(rootPane, "Deleted!");
+            } catch (SQLException e) {
+
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+
+        }
+
+        updateStudentShortInfo();
+        upDateStudentInfo();
+        updateStudentDoc();
+        
+        
+        
+    }//GEN-LAST:event_btnDocDelActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1564,6 +1747,10 @@ public class EasyStatMain extends javax.swing.JFrame {
     private javax.swing.JButton btnAttach;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDocAdd;
+    private javax.swing.JButton btnDocAttch;
+    private javax.swing.JButton btnDocClear;
+    private javax.swing.JButton btnDocDel;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnHelp;
     private javax.swing.JButton btnImageSave;
@@ -1578,6 +1765,9 @@ public class EasyStatMain extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1599,9 +1789,8 @@ public class EasyStatMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel13;
     private javax.swing.JPanel jPanel14;
     private javax.swing.JPanel jPanel15;
+    private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
@@ -1609,6 +1798,7 @@ public class EasyStatMain extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel labelImage;
@@ -1620,9 +1810,14 @@ public class EasyStatMain extends javax.swing.JFrame {
     private java.awt.TextArea tAMsgBody;
     private javax.swing.JTable tbStudentInfo;
     private javax.swing.JTable tbStudentShortInfo;
+    private javax.swing.JTable tblDoc;
     private javax.swing.JTextField txtAttachFile;
     private javax.swing.JTextField txtAttachName;
     private javax.swing.JLabel txtAttachNme;
+    private javax.swing.JTextField txtDocAtch;
+    private javax.swing.JTextField txtDocId;
+    private javax.swing.JTextField txtDocNme;
+    private javax.swing.JTextField txtDocSid;
     private javax.swing.JTextField txtFrom;
     private javax.swing.JTextField txtImageUpload;
     private javax.swing.JPasswordField txtPassword;
